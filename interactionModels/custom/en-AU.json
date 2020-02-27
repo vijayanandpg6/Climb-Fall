@@ -1,0 +1,311 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "climb fall",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "HelloWorldIntent",
+          "slots": [],
+          "samples": [
+            "hello",
+            "how are you",
+            "say hi world",
+            "say hi",
+            "hi",
+            "say hello world",
+            "say hello"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "PlayGameIntent",
+          "slots": [
+            {
+              "name": "QuizResponse",
+              "type": "QuizResponse"
+            }
+          ],
+          "samples": [
+            "option {QuizResponse}",
+            "begin game",
+            "start game",
+            "begin the game",
+            "start the game",
+            "start",
+            "begin",
+            "lets start",
+            "let\u0027s start",
+            "lets begin",
+            "let\u0027s begin"
+          ]
+        },
+        {
+          "name": "IncreaseIntent",
+          "slots": [],
+          "samples": [
+            "increase value",
+            "raise value",
+            "raise",
+            "increase"
+          ]
+        },
+        {
+          "name": "ReduceIntent",
+          "slots": [],
+          "samples": [
+            "reduce value",
+            "decrease value",
+            "decrease",
+            "reduce"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "two",
+                "synonyms": [
+                  "2"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "three",
+                "synonyms": [
+                  "3"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "four",
+                "synonyms": [
+                  "4"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "five",
+                "synonyms": [
+                  "5"
+                ]
+              }
+            }
+          ],
+          "name": "NumberOfPlayers"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "advanced",
+                "synonyms": [
+                  "hard level",
+                  "hard",
+                  "advanced level"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "intermediate",
+                "synonyms": [
+                  "medium level",
+                  "medium",
+                  "intermediate level"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "beginner",
+                "synonyms": [
+                  "easy level",
+                  "easy",
+                  "beginners level",
+                  "beginner level",
+                  "beginners"
+                ]
+              }
+            }
+          ],
+          "name": "Difficulty"
+        },
+        {
+          "values": [
+            {
+              "id": "OPA",
+              "name": {
+                "value": "one",
+                "synonyms": [
+                  "1",
+                  "A"
+                ]
+              }
+            },
+            {
+              "id": "OPB",
+              "name": {
+                "value": "two",
+                "synonyms": [
+                  "2",
+                  "B"
+                ]
+              }
+            },
+            {
+              "id": "OPC",
+              "name": {
+                "value": "three",
+                "synonyms": [
+                  "3",
+                  "C"
+                ]
+              }
+            },
+            {
+              "id": "OPD",
+              "name": {
+                "value": "four",
+                "synonyms": [
+                  "4",
+                  "D"
+                ]
+              }
+            }
+          ],
+          "name": "QuizResponse"
+        }
+      ]
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "PlayGameIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "QuizResponse",
+              "type": "QuizResponse",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {},
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.1452161613850.530105575178.73279519244"
+                }
+              ]
+            }
+          ],
+          "delegationStrategy": "SKILL_RESPONSE"
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.645765965308.800288882769",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You can choose any difficulty level to play. Beginner level has seven snakes and ten ladders with beginner level quiz. Intermediate level has eight snakes and eight ladders with intermediate level quiz. Advanced level has ten snakes and seven ladders with advanced quiz. Which difficulty level would you like to choose, Beginner, Intermediate or Advanced?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.645765965308.972929331859",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "We can play this game with a minimum of two players, and a maximum of five players. How many players are going to play this game?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.645765965308.800288882769.659770978933",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please choose a valid difficulty level. Which difficulty level would you like to choose, Beginner, Intermediate or Advanced?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Slot.645765965308.800288882769",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You have chosen {Difficulty} level. Am I right?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Slot.645765965308.972929331859",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "{NumberOfPlayers} players are going to play this game. Am I right?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.645765965308.972929331859.342488010878",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please choose valid number of players. We can play this game with a minimum of two players, and a maximum of five players. How many players are going to play this game?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.643164082661.1176712978176.1065808065038",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please choose a valid option. Is it option A, option B, option C, or option D?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.223561576944.1014032546767.778533463513",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please choose a valid option. Is it option A, option B, option C, or option D?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.1452161613850.530105575178.73279519244",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please choose a valid option. option one, option two, option three or option four?"
+          }
+        ]
+      }
+    ]
+  },
+  "version": "2"
+}
