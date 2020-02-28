@@ -23,7 +23,11 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        
+        attr = handler_input.attributes_manager.session_attributes
+        attr["GameState"] = "INITIALIZE"
+        attr["PlayerState"] = "ROLLDIEANDQUESTION"
+        attr["PreviousQuestion"] = ""
+        attr["Options"] = []
         return (
             handler_input.response_builder
                 .speak(speak_output)
@@ -40,6 +44,17 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         attr = handler_input.attributes_manager.session_attributes
         slots = handler_input.request_envelope.request.intent.slots
+
+		speak_output = "Okay"
+        #speak_output += str(slots['QuizResponse'])
+
+		attr["GameState"] = "PLAYERTURNS"
+            # board construct logic
+            speak_output = "Let me construct the board for you. " + alexaOP_scifiZapElectric + "We are now ready to start the game. " + alexaOP_gameshowOutro
+
+		final_value = snakes.get(attr[player])
+                    attr[player] -= final_value
+                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
         
 		attr["GameState"] = "PLAYERTURNS"
             # board construct logic
