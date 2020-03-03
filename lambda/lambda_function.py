@@ -44,37 +44,23 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         attr = handler_input.attributes_manager.session_attributes
         slots = handler_input.request_envelope.request.intent.slots
-
-		speak_output = "Okay"
+        
+        speak_output = "Okay"
         #speak_output += str(slots['QuizResponse'])
-		game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
-
-		attr["GameState"] = "PLAYERTURNS"
+        
+        if(attr.get("GameState") == "INITIALIZE"):
+            attr["GameState"] = "PLAYERTURNS"
             # board construct logic
             speak_output = "Let me construct the board for you. " + alexaOP_scifiZapElectric + "We are now ready to start the game. " + alexaOP_gameshowOutro
 
 		final_value = snakes.get(attr[player])
                     attr[player] -= final_value
                     speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
-        
-		attr["GameState"] = "PLAYERTURNS"
-            # board construct logic
-            speak_output = "Let me construct the board for you. " + alexaOP_scifiZapElectric + "We are now ready to start the game. " + alexaOP_gameshowOutro
-        
-                question_with_options = "Ask a question? "
-                speak_output += question_with_options
-                attr["PlayerState"] = "VALIDATEANSWER"
-		attr["GameState"] = "INITIALIZE"
-                    attr["PlayerState"] = "ROLLDIEANDQUESTION"
-                    return (
-                        handler_input.response_builder
-                            .speak(speak_output)
-                            .response
-                    )
-		if attr[player] in ladders:
-                    final_value = ladders.get(attr[player])
-                    attr[player] += final_value
-                    speak_output +=  "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
+            
+        if attr[player] in ladders:
+            final_value = ladders.get(attr[player])
+            attr[player] += final_value
+            speak_output +=  "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
         if(attr.get("Player1") >= MAXVALUE):
             speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
             attr["GameState"] = "INITIALIZE"
@@ -83,7 +69,6 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 handler_input.response_builder
                     .speak(speak_output)
                     .response
-            )
         
         return (
             handler_input.response_builder
