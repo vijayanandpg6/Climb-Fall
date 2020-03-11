@@ -69,7 +69,22 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 handler_input.response_builder
                     .speak(speak_output)
                     .response
+		elif(attr.get("PlayerState") == "REDUCE"):
+            player = "Player" + str(currentPlayer)
+            attr[player] -= attr["SecondDie"]
+            if(attr.get(player) < 0):
+                attr[player] = 0
+            attr["PlayerState"] = "ROLLDIEANDQUESTION"
         
+                if(attr.get("Player2") >= MAXVALUE):
+                    speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    attr["GameState"] = "INITIALIZE"
+                    attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
         return (
             handler_input.response_builder
                 .speak(speak_output)
