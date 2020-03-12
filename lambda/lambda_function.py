@@ -47,6 +47,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
 
 		speak_output = "Okay"
         #speak_output += str(slots['QuizResponse'])
+		game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
 
 		attr["GameState"] = "PLAYERTURNS"
             # board construct logic
@@ -63,6 +64,26 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 question_with_options = "Ask a question? "
                 speak_output += question_with_options
                 attr["PlayerState"] = "VALIDATEANSWER"
+		attr["GameState"] = "INITIALIZE"
+                    attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
+		if attr[player] in ladders:
+                    final_value = ladders.get(attr[player])
+                    attr[player] += final_value
+                    speak_output +=  "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
+        if(attr.get("Player1") >= MAXVALUE):
+            speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+            attr["GameState"] = "INITIALIZE"
+            attr["PlayerState"] = "ROLLDIEANDQUESTION"
+            return (
+                handler_input.response_builder
+                    .speak(speak_output)
+                    .response
+            )
         
         return (
             handler_input.response_builder
@@ -80,6 +101,7 @@ class IncreaseIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         attrib = handler_input.attributes_manager.session_attributes
+        attrib["PlayerState"] = "INCREASE"
         return PlayGameIntentHandler().handle(handler_input)
 
 class ReduceIntentHandler(AbstractRequestHandler):
