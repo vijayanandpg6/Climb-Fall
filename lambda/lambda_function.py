@@ -100,6 +100,23 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                                 .speak(speak_output)
                                 .response
                         )
+				speak_output += "You have two options. You can either increase your score or reduce your opponents score. Do you want to, increase? or reduce?"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .ask(speak_output)
+                            .response
+                    )
+				# 4. Roll another die options
+                else:
+                    if(attr.get("CorrectOptionID") == 1):
+                        answerOption = "one"
+                    elif(attr.get("CorrectOptionID") == 2):
+                        answerOption = "two"
+                    elif(attr.get("CorrectOptionID") == 3):
+                        answerOption = "three"
+				speak_output += " Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
+                attr["PlayerState"] = "ROLLDIEANDQUESTION"
         return (
             handler_input.response_builder
                 .speak(speak_output)
