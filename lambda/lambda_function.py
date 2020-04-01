@@ -117,6 +117,23 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                         answerOption = "three"
 				speak_output += " Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
                 attr["PlayerState"] = "ROLLDIEANDQUESTION"
+			if(attr.get("PlayerState") == "ROLLDIEANDQUESTION"):
+                # 1. Roll first die
+                speak_output += "Player " + str(currentPlayer) + "'s turn. " + "Rolling your first die. " + alexaOP_roll
+                firstDie = random.randint(1, 6)
+                speak_output += "You hit a " + str(firstDie) + ". "
+                # 2. ask question and display options
+				attr["CurrentPlayer"] =  attr["CurrentPlayer"] + 1
+                if(attr.get("CurrentPlayer") > 2):
+                    attr["CurrentPlayer"] = 1
+                player = "Player" + str(currentPlayer)
+                attr[player] += firstDie
+                
+                if attr[player] in snakes:
+                    final_value = snakes.get(attr[player])
+                    attr[player] -= final_value
+                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
+                    
         return (
             handler_input.response_builder
                 .speak(speak_output)
