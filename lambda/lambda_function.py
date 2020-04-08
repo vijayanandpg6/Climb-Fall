@@ -133,6 +133,25 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                     final_value = snakes.get(attr[player])
                     attr[player] -= final_value
                     speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
+			if attr[player] in ladders:
+                    final_value = ladders.get(attr[player])
+                    attr[player] += final_value
+                    speak_output += "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
+                
+                if(attr.get("Player1") >= MAXVALUE):
+                    speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
+                if(attr.get("Player2") >= MAXVALUE):
+                    speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
                     
         return (
             handler_input.response_builder
