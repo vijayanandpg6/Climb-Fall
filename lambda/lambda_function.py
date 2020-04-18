@@ -28,6 +28,14 @@ class LaunchRequestHandler(AbstractRequestHandler):
         attr["PlayerState"] = "ROLLDIEANDQUESTION"
         attr["PreviousQuestion"] = ""
         attr["Options"] = []
+        attr["CorrectOption"] = ""
+        attr["CorrectOptionID"] = ""
+        attr["CurrentPlayer"] = 1
+        attr["Player1"] = 0
+        attr["Player2"] = 0
+        attr["SecondDie"] = 0
+        speak_output = alexaOP_gameshowOutro + alexaOP_introduction + alexaOP_rules + alexaOP_startGame
+        
         return (
             handler_input.response_builder
                 .speak(speak_output)
@@ -123,7 +131,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 firstDie = random.randint(1, 6)
                 speak_output += "You hit a " + str(firstDie) + ". "
                 # 2. ask question and display options
-				attr["CurrentPlayer"] =  attr["CurrentPlayer"] + 1
+                attr["CurrentPlayer"] =  attr["CurrentPlayer"] + 1
                 if(attr.get("CurrentPlayer") > 2):
                     attr["CurrentPlayer"] = 1
                 player = "Player" + str(currentPlayer)
@@ -132,8 +140,8 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 if attr[player] in snakes:
                     final_value = snakes.get(attr[player])
                     attr[player] -= final_value
-                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
-			if attr[player] in ladders:
+                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake              
+                if attr[player] in ladders:
                     final_value = ladders.get(attr[player])
                     attr[player] += final_value
                     speak_output += "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
@@ -152,6 +160,16 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                             .speak(speak_output)
                             .response
                     )
+                
+                #Todo: quiz logic here....................  difficulty - 1,2,3
+                game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
+                
+				#attr["PreviousQuestion"] = "whats your name?"
+                #attr["Options"] = ["Bhu", "George", "Einstein", "Albert"]
+                question_with_options = "Question. " + attr["PreviousQuestion"] + " Option one, " + attr["Options"][0] +",  Option two, "+ attr["Options"][1]+",  Option three, "+ attr["Options"][2]+",  Option four, "+ attr["Options"][3] + ". Is it, option one, option two, option three, or option four?"
+                speak_output += question_with_options
+                attr["PlayerState"] = "VALIDATEANSWER"
+                
                     
         return (
             handler_input.response_builder
