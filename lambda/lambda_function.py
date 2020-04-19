@@ -27,6 +27,16 @@ VALIDATEANSWER = "VALIDATEANSWER"
 INCREASE = "INCREASE"
 REDUCE = "REDUCE"
 
+class GameState(Enum):
+    Intialize = 1
+    Start = 2
+    PlayerTurns = 3
+    GameOver = 4
+
+class PlayerState(Enum):
+    RollDieAndQuestion = 1
+    ValidateAnswer = 2
+
 # currentPlayer = 0
 snakes = {
     8: 4,
@@ -101,6 +111,10 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
         attr = handler_input.attributes_manager.session_attributes
         slots = handler_input.request_envelope.request.intent.slots
         
+        # Configurable values
+        numberOfPlayers = 2 #slots['NumberOfPlayers']
+        difficulty = 2 # slots['Difficulty']
+        
         speak_output = "Okay"
         #speak_output += str(slots['QuizResponse'])
         
@@ -108,7 +122,6 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
             attr["GameState"] = "PLAYERTURNS"
             # board construct logic
             speak_output = "Let me construct the board for you. " + alexaOP_scifiZapElectric + "We are now ready to start the game. " + alexaOP_gameshowOutro
-
 		final_value = snakes.get(attr[player])
                     attr[player] -= final_value
                     speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
