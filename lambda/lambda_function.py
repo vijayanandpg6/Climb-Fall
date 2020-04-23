@@ -122,30 +122,34 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
             attr["GameState"] = "PLAYERTURNS"
             # board construct logic
             speak_output = "Let me construct the board for you. " + alexaOP_scifiZapElectric + "We are now ready to start the game. " + alexaOP_gameshowOutro
-		final_value = snakes.get(attr[player])
+		if(attr.get("GameState") == "PLAYERTURNS"):
+            currentPlayer = attr.get("CurrentPlayer")
+            if(attr.get("PlayerState") == "INCREASE"):
+                cplayer = attr["CurrentPlayer"] + 1
+                if(cplayer > 2):
+                    cplayer = 1
+                player = "Player" + str(cplayer)
+                attr[player] += attr["SecondDie"]
+                attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                if attr[player] in snakes:
+                    final_value = snakes.get(attr[player])
                     attr[player] -= final_value
                     speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
-            
-        if attr[player] in ladders:
-            final_value = ladders.get(attr[player])
-            attr[player] += final_value
-            speak_output +=  "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
-        if(attr.get("Player1") >= MAXVALUE):
-            speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
-            attr["GameState"] = "INITIALIZE"
-            attr["PlayerState"] = "ROLLDIEANDQUESTION"
-            return (
-                handler_input.response_builder
-                    .speak(speak_output)
-                    .response
-		elif(attr.get("PlayerState") == "REDUCE"):
-            player = "Player" + str(currentPlayer)
-            attr[player] -= attr["SecondDie"]
-            if(attr.get(player) < 0):
-                attr[player] = 0
-            attr["PlayerState"] = "ROLLDIEANDQUESTION"
-        
-                if(attr.get("Player2") >= MAXVALUE):
+                    
+                if attr[player] in ladders:
+                    final_value = ladders.get(attr[player])
+                    attr[player] += final_value
+                    speak_output +=  "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
+                if(attr.get("Player1") >= MAXVALUE):
+                    speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    attr["GameState"] = "INITIALIZE"
+                    attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
+			if(attr.get("Player2") >= MAXVALUE):
                     speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
                     attr["GameState"] = "INITIALIZE"
                     attr["PlayerState"] = "ROLLDIEANDQUESTION"
@@ -154,7 +158,18 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                             .speak(speak_output)
                             .response
                     )
-			speak_output += " Now, Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
+                speak_output += " Now, Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
+			elif(attr.get("PlayerState") == "REDUCE"):
+                player = "Player" + str(currentPlayer)
+                attr[player] -= attr["SecondDie"]
+                if(attr.get(player) < 0):
+                    attr[player] = 0
+                attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                if attr[player] in snakes:
+                    final_value = snakes.get(attr[player])
+                    attr[player] -= final_value
+                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
+                    
 			if(attr.get("PlayerState") == "VALIDATEANSWER"):
                 # 3. validate user's VALIDATEANSWER
                 currentAnswer = str(slots['QuizResponse'].value)
