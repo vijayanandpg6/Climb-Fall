@@ -170,6 +170,29 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                     attr[player] -= final_value
                     speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
                     
+                if attr[player] in ladders:
+                    final_value = ladders.get(attr[player])
+                    attr[player] += final_value
+                    speak_output += "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
+                if(attr.get("Player1") >= MAXVALUE):
+                    speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    attr["GameState"] = "INITIALIZE"
+                    attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
+                if(attr.get("Player2") >= MAXVALUE):
+                    speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    attr["GameState"] = "INITIALIZE"
+                    attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
+                speak_output += " Now, Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
 			if(attr.get("PlayerState") == "VALIDATEANSWER"):
                 # 3. validate user's VALIDATEANSWER
                 currentAnswer = str(slots['QuizResponse'].value)
