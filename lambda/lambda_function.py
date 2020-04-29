@@ -220,7 +220,23 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                                 .speak(speak_output)
                                 .response
                         )
-				# 4. Roll another die options
+						if(attr.get("Player2") >= MAXVALUE):
+                        speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                        attr["GameState"] = "INITIALIZE"
+                        attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                        return (
+                            handler_input.response_builder
+                                .speak(speak_output)
+                                .response
+                        )
+                    speak_output += "You have two options. You can either increase your score or reduce your opponents score. Do you want to, increase? or reduce?"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .ask(speak_output)
+                            .response
+                    )
+                    # 4. Roll another die options
                 else:
                     if(attr.get("CorrectOptionID") == 1):
                         answerOption = "one"
