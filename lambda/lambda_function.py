@@ -13,7 +13,16 @@ from ask_sdk_core.dispatch_components import AbstractExceptionHandler
 from ask_sdk_core.handler_input import HandlerInput
 from random import randrange
 from ask_sdk_model import Response
+import random
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+
+repeat_text = "Repeat"
+gameName = "Climb Fall"
+alexaOP_introduction = "Welcome to, " + gameName + " game. In the 13th century, the snakes and ladders game was invented, where the players climb when they reach the ladder, and fall when they reach the snake. This will not be your usual snake and ladder game, and can be played by only two players. After each player rolls a die, you will be asked a quiz with four options. If you tell the correct answer, you will get an option to roll another die. By rolling this die, you get a chance either to increase your position, or reduce your opponents position, whichever you choose. Sounds fun? "
+alexaOP_rules = ""
 
 # Game States
 INITIALIZE = "INITIALIZE"
@@ -198,8 +207,12 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 currentAnswer = str(slots['QuizResponse'].value)
                 answerOption = ""
                 if(str(attr.get("CorrectOptionID")) == currentAnswer):
-					if(attr.get("Player2") >= MAXVALUE):
-                        speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                #if(attr.get("CorrectOption").lower() == currentAnswer.lower()):
+                    secondDie = random.randint(1, 6)
+                    attr["SecondDie"] = secondDie
+                    speak_output = alexaOP_correctAnswer + "Yay! Your answer is correct. Rolling your second die." + alexaOP_roll + " You hit a " + str(secondDie) + ". "
+                    if(attr.get("Player1") >= MAXVALUE):
+                        speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
                         attr["GameState"] = "INITIALIZE"
                         attr["PlayerState"] = "ROLLDIEANDQUESTION"
                         return (
@@ -207,13 +220,6 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                                 .speak(speak_output)
                                 .response
                         )
-				speak_output += "You have two options. You can either increase your score or reduce your opponents score. Do you want to, increase? or reduce?"
-                    return (
-                        handler_input.response_builder
-                            .speak(speak_output)
-                            .ask(speak_output)
-                            .response
-                    )
 				# 4. Roll another die options
                 else:
                     if(attr.get("CorrectOptionID") == 1):
