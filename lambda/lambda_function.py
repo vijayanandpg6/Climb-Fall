@@ -254,6 +254,27 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 speak_output += "Player " + str(currentPlayer) + "'s turn. " + "Rolling your first die. " + alexaOP_roll
                 firstDie = random.randint(1, 6)
                 speak_output += "You hit a " + str(firstDie) + ". "
+                # 2. ask question and display options
+                attr["CurrentPlayer"] =  attr["CurrentPlayer"] + 1
+                if(attr.get("CurrentPlayer") > 2):
+                    attr["CurrentPlayer"] = 1
+                player = "Player" + str(currentPlayer)
+                attr[player] += firstDie
+				if(attr.get("Player2") >= MAXVALUE):
+                        speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                        attr["GameState"] = "INITIALIZE"
+                        attr["PlayerState"] = "ROLLDIEANDQUESTION"
+                        return (
+                            handler_input.response_builder
+                                .speak(speak_output)
+                                .response
+                        )
+                    speak_output += "You have two options. You can either increase your score or reduce your opponents score. Do you want to, increase? or reduce?"
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .ask(speak_output)
+                            .response
                 
                 #Todo: quiz logic here....................  difficulty - 1,2,3
                 game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
