@@ -244,43 +244,16 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                         answerOption = "two"
                     elif(attr.get("CorrectOptionID") == 3):
                         answerOption = "three"
-				speak_output += " Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
+                    elif(attr.get("CorrectOptionID") == 4):
+                        answerOption = "four"
+                    speak_output = alexaOP_wrongAnswer + "Uh Oh! Wrong answer. Correct answer is Option " + answerOption + ", " + attr.get("CorrectOption") + " . "
+                speak_output += " Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
                 attr["PlayerState"] = "ROLLDIEANDQUESTION"
 			if(attr.get("PlayerState") == "ROLLDIEANDQUESTION"):
                 # 1. Roll first die
                 speak_output += "Player " + str(currentPlayer) + "'s turn. " + "Rolling your first die. " + alexaOP_roll
                 firstDie = random.randint(1, 6)
                 speak_output += "You hit a " + str(firstDie) + ". "
-                # 2. ask question and display options
-                attr["CurrentPlayer"] =  attr["CurrentPlayer"] + 1
-                if(attr.get("CurrentPlayer") > 2):
-                    attr["CurrentPlayer"] = 1
-                player = "Player" + str(currentPlayer)
-                attr[player] += firstDie
-                
-                if attr[player] in snakes:
-                    final_value = snakes.get(attr[player])
-                    attr[player] -= final_value
-                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake              
-                if attr[player] in ladders:
-                    final_value = ladders.get(attr[player])
-                    attr[player] += final_value
-                    speak_output += "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
-                
-                if(attr.get("Player1") >= MAXVALUE):
-                    speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
-                    return (
-                        handler_input.response_builder
-                            .speak(speak_output)
-                            .response
-                    )
-                if(attr.get("Player2") >= MAXVALUE):
-                    speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
-                    return (
-                        handler_input.response_builder
-                            .speak(speak_output)
-                            .response
-                    )
                 
                 #Todo: quiz logic here....................  difficulty - 1,2,3
                 game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
