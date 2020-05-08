@@ -36,6 +36,17 @@ VALIDATEANSWER = "VALIDATEANSWER"
 INCREASE = "INCREASE"
 REDUCE = "REDUCE"
 
+# sound effects
+alexaOP_hammer = "<audio src=\"soundbank://soundlibrary/chairs/seats_stools/seats_stools_06\"/>"
+alexaOP_scifiZapElectric = "<audio src=\"soundbank://soundlibrary/scifi/amzn_sfx_scifi_zap_electric_02\"/>"
+alexaOP_gameshowOutro = "<audio src=\"soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_intro_01\"/>"
+alexaOP_wrongAnswer = "<audio src=\"soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_negative_response_01\"/>"
+alexaOP_correctAnswer = "<audio src=\"soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01\"/>"
+alexaOP_applauce = "<audio src=\"soundbank://soundlibrary/human/amzn_sfx_crowd_applause_01\"/>"
+alexaOP_walk = "<audio src=\"soundbank://soundlibrary/human/amzn_sfx_human_walking_01\"/>"
+alexaOP_snake = "<audio src=\"soundbank://soundlibrary/scifi/amzn_sfx_scifi_air_escaping_01\"/>"
+alexaOP_roll = "<audio src=\"soundbank://soundlibrary/toys_games/board_games/board_games_07\"/>"
+
 class GameState(Enum):
     Intialize = 1
     Start = 2
