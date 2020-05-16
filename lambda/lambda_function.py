@@ -297,6 +297,15 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 attr["PlayerState"] = "VALIDATEANSWER"
                 
                     
+        # api-endpoint 
+                URL = "https://opentdb.com/api.php?amount=1"
+
+                #attr["PreviousQuestion"] = "whats your name?"
+                #attr["Options"] = ["Bhu", "George", "Einstein", "Albert"]
+                question_with_options = "Question. " + attr["PreviousQuestion"] + " Option one, " + attr["Options"][0] +",  Option two, "+ attr["Options"][1]+",  Option three, "+ attr["Options"][2]+",  Option four, "+ attr["Options"][3] + ". Is it, option one, option two, option three, or option four?"
+                speak_output += question_with_options
+                attr["PlayerState"] = "VALIDATEANSWER"
+        
         return (
             handler_input.response_builder
                 .speak(speak_output)
