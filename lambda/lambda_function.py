@@ -300,6 +300,17 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
         # api-endpoint 
                 URL = "https://opentdb.com/api.php?amount=1"
 
+                while(True):
+                    # sending get request and saving the response as response object 
+                    r = requests.get(url = URL) 
+                    # extracting data in json format 
+                    data = r.json() 
+                    quiz_Difficulty = data['results'][0]['difficulty']
+                    sizeOfOption = len(data['results'][0]['incorrect_answers'])
+                    attr["PreviousQuestion"] = data['results'][0]['question']
+                    attr["CorrectOption"] =data['results'][0]['correct_answer']
+                    
+                    #break
                 #attr["PreviousQuestion"] = "whats your name?"
                 #attr["Options"] = ["Bhu", "George", "Einstein", "Albert"]
                 question_with_options = "Question. " + attr["PreviousQuestion"] + " Option one, " + attr["Options"][0] +",  Option two, "+ attr["Options"][1]+",  Option three, "+ attr["Options"][2]+",  Option four, "+ attr["Options"][3] + ". Is it, option one, option two, option three, or option four?"
