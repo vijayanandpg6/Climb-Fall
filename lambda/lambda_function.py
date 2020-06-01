@@ -271,32 +271,35 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                     attr["CurrentPlayer"] = 1
                 player = "Player" + str(currentPlayer)
                 attr[player] += firstDie
-				if(attr.get("Player2") >= MAXVALUE):
-                        speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
-                        attr["GameState"] = "INITIALIZE"
-                        attr["PlayerState"] = "ROLLDIEANDQUESTION"
-                        return (
-                            handler_input.response_builder
-                                .speak(speak_output)
-                                .response
-                        )
-                    speak_output += "You have two options. You can either increase your score or reduce your opponents score. Do you want to, increase? or reduce?"
+                
+                if attr[player] in snakes:
+                    final_value = snakes.get(attr[player])
+                    attr[player] -= final_value
+                    speak_output += "Oh no! There is a snake. " + player + " falling down to position " + str(attr[player]) + ". " + alexaOP_snake
+                    
+                if attr[player] in ladders:
+                    final_value = ladders.get(attr[player])
+                    attr[player] += final_value
+                    speak_output += "Yay! There is a ladder. " + player + " climbing up to position " + str(attr[player]) + ". " + alexaOP_walk
+                
+                if(attr.get("Player1") >= MAXVALUE):
+                    speak_output += "Player 1 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
                     return (
                         handler_input.response_builder
                             .speak(speak_output)
-                            .ask(speak_output)
                             .response
+                    )
+                if(attr.get("Player2") >= MAXVALUE):
+                    speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
+                    return (
+                        handler_input.response_builder
+                            .speak(speak_output)
+                            .response
+                    )
                 
                 #Todo: quiz logic here....................  difficulty - 1,2,3
                 game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
-                
-				#attr["PreviousQuestion"] = "whats your name?"
-                #attr["Options"] = ["Bhu", "George", "Einstein", "Albert"]
-                question_with_options = "Question. " + attr["PreviousQuestion"] + " Option one, " + attr["Options"][0] +",  Option two, "+ attr["Options"][1]+",  Option three, "+ attr["Options"][2]+",  Option four, "+ attr["Options"][3] + ". Is it, option one, option two, option three, or option four?"
-                speak_output += question_with_options
-                attr["PlayerState"] = "VALIDATEANSWER"
-                
-                    
+                           
         # api-endpoint 
                 URL = "https://opentdb.com/api.php?amount=1"
 
@@ -309,7 +312,15 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                     sizeOfOption = len(data['results'][0]['incorrect_answers'])
                     attr["PreviousQuestion"] = data['results'][0]['question']
                     attr["CorrectOption"] =data['results'][0]['correct_answer']
-                    
+                    #inserting correct answer at random index.
+                    randomIndex= randrange(sizeOfOption + 1)
+                    (data['results'][0]['incorrect_answers']).insert(randomIndex,attr["CorrectOption"])
+                    attr["Options"] = data['results'][0]['incorrect_answers']
+                    attr["CorrectOptionID"] = randomIndex + 1
+                    if (quiz_Difficulty != game_difficulty[difficulty]) or (sizeOfOption < 3 ):
+                        continue
+                    else:
+                        break
                     #break
                 #attr["PreviousQuestion"] = "whats your name?"
                 #attr["Options"] = ["Bhu", "George", "Einstein", "Albert"]
