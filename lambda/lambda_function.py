@@ -13,28 +13,20 @@ from ask_sdk_core.dispatch_components import AbstractExceptionHandler
 from ask_sdk_core.handler_input import HandlerInput
 from random import randrange
 from ask_sdk_model import Response
+
+from enum import Enum
 import random
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-
 repeat_text = "Repeat"
 gameName = "Climb Fall"
 alexaOP_introduction = "Welcome to, " + gameName + " game. In the 13th century, the snakes and ladders game was invented, where the players climb when they reach the ladder, and fall when they reach the snake. This will not be your usual snake and ladder game, and can be played by only two players. After each player rolls a die, you will be asked a quiz with four options. If you tell the correct answer, you will get an option to roll another die. By rolling this die, you get a chance either to increase your position, or reduce your opponents position, whichever you choose. Sounds fun? "
 alexaOP_rules = ""
-
-# Game States
-INITIALIZE = "INITIALIZE"
-START = "START"
-PLAYERTURNS = "PLAYERTURNS"
-GAMEOVER = "GAMEOVER"  
-
-# Player States
-ROLLDIEANDQUESTION = "ROLLDIEANDQUESTION"
-VALIDATEANSWER = "VALIDATEANSWER"
-INCREASE = "INCREASE"
-REDUCE = "REDUCE"
+alexaOP_startGame = "Tell me to \"Start the game\" when you are ready. "
+alexaOP_players = "We can play this game with a minimum of 2 players, and a maximum of 5 players. Before we begin, please tell us how many players are going to play this game?"
+alexaOP_difficulty = "You can choose any difficulty level to play. Beginner level has 7 snakes and 10 ladders with beginner level quiz. Intermediate level contains 8 snakes and 8 ladders with intermediate level quiz. Advanced level contains has 10 snakes and 7 ladders with advanced quiz."
 
 # sound effects
 alexaOP_hammer = "<audio src=\"soundbank://soundlibrary/chairs/seats_stools/seats_stools_06\"/>"
@@ -47,6 +39,12 @@ alexaOP_walk = "<audio src=\"soundbank://soundlibrary/human/amzn_sfx_human_walki
 alexaOP_snake = "<audio src=\"soundbank://soundlibrary/scifi/amzn_sfx_scifi_air_escaping_01\"/>"
 alexaOP_roll = "<audio src=\"soundbank://soundlibrary/toys_games/board_games/board_games_07\"/>"
 
+# parameters
+# numberOfPlayers = 0
+# difficulty = ""
+# playerPosition[5] = [0, 0, 0, 0, 0]
+MAXVALUE = 100
+
 class GameState(Enum):
     Intialize = 1
     Start = 2
@@ -56,6 +54,18 @@ class GameState(Enum):
 class PlayerState(Enum):
     RollDieAndQuestion = 1
     ValidateAnswer = 2
+
+# Game States
+INITIALIZE = "INITIALIZE"
+START = "START"
+PLAYERTURNS = "PLAYERTURNS"
+GAMEOVER = "GAMEOVER"  
+
+# Player States
+ROLLDIEANDQUESTION = "ROLLDIEANDQUESTION"
+VALIDATEANSWER = "VALIDATEANSWER"
+INCREASE = "INCREASE"
+REDUCE = "REDUCE"
 
 # currentPlayer = 0
 snakes = {
@@ -121,6 +131,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
                 .response
         )
 
+
 class  PlayGameIntentHandler(AbstractRequestHandler):
     """Handler for Hello World Intent."""
     def can_handle(self, handler_input):
@@ -142,7 +153,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
             attr["GameState"] = "PLAYERTURNS"
             # board construct logic
             speak_output = "Let me construct the board for you. " + alexaOP_scifiZapElectric + "We are now ready to start the game. " + alexaOP_gameshowOutro
-		if(attr.get("GameState") == "PLAYERTURNS"):
+        if(attr.get("GameState") == "PLAYERTURNS"):
             currentPlayer = attr.get("CurrentPlayer")
             if(attr.get("PlayerState") == "INCREASE"):
                 cplayer = attr["CurrentPlayer"] + 1
@@ -169,7 +180,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                             .speak(speak_output)
                             .response
                     )
-			if(attr.get("Player2") >= MAXVALUE):
+                if(attr.get("Player2") >= MAXVALUE):
                     speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
                     attr["GameState"] = "INITIALIZE"
                     attr["PlayerState"] = "ROLLDIEANDQUESTION"
@@ -179,7 +190,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                             .response
                     )
                 speak_output += " Now, Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
-			elif(attr.get("PlayerState") == "REDUCE"):
+            elif(attr.get("PlayerState") == "REDUCE"):
                 player = "Player" + str(currentPlayer)
                 attr[player] -= attr["SecondDie"]
                 if(attr.get(player) < 0):
@@ -213,7 +224,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                             .response
                     )
                 speak_output += " Now, Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
-			if(attr.get("PlayerState") == "VALIDATEANSWER"):
+            if(attr.get("PlayerState") == "VALIDATEANSWER"):
                 # 3. validate user's VALIDATEANSWER
                 currentAnswer = str(slots['QuizResponse'].value)
                 answerOption = ""
@@ -231,7 +242,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                                 .speak(speak_output)
                                 .response
                         )
-						if(attr.get("Player2") >= MAXVALUE):
+                    if(attr.get("Player2") >= MAXVALUE):
                         speak_output += "Player 2 wins. Congratulations. " + alexaOP_applauce + "Thank you for playing this game."
                         attr["GameState"] = "INITIALIZE"
                         attr["PlayerState"] = "ROLLDIEANDQUESTION"
@@ -260,7 +271,7 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                     speak_output = alexaOP_wrongAnswer + "Uh Oh! Wrong answer. Correct answer is Option " + answerOption + ", " + attr.get("CorrectOption") + " . "
                 speak_output += " Player 1 at position " + str(attr["Player1"]) + " and Player 2 at position " + str(attr["Player2"])  + ". "
                 attr["PlayerState"] = "ROLLDIEANDQUESTION"
-			if(attr.get("PlayerState") == "ROLLDIEANDQUESTION"):
+            if(attr.get("PlayerState") == "ROLLDIEANDQUESTION"):
                 # 1. Roll first die
                 speak_output += "Player " + str(currentPlayer) + "'s turn. " + "Rolling your first die. " + alexaOP_roll
                 firstDie = random.randint(1, 6)
@@ -299,8 +310,9 @@ class  PlayGameIntentHandler(AbstractRequestHandler):
                 
                 #Todo: quiz logic here....................  difficulty - 1,2,3
                 game_difficulty = {1:"easy", 2:"medium" , 3:"hard"}
-                           
-        # api-endpoint 
+                
+                
+                # api-endpoint 
                 URL = "https://opentdb.com/api.php?amount=1"
 
                 while(True):
