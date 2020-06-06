@@ -131,7 +131,6 @@ class LaunchRequestHandler(AbstractRequestHandler):
                 .response
         )
 
-
 class  PlayGameIntentHandler(AbstractRequestHandler):
     """Handler for Hello World Intent."""
     def can_handle(self, handler_input):
@@ -415,6 +414,12 @@ class SessionEndedRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
+
+        # Any cleanup logic goes here.
+        slots = handler_input.request_envelope.request.intent.slots
+        slots['Difficulty'] = ""
+        slots['NumberOfPlayers'] = ""
+
         return handler_input.response_builder.response
 
 
